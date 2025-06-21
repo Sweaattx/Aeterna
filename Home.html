@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Aeterna Horlogerie - Lima</title>
+      <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for advanced animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Applying fonts based on the style guide */        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            background-image: linear-gradient(rgba(26,26,26,0.96), rgba(26,26,26,0.96)), url('https://images.pexels.com/photos/1797393/pexels-photo-1797393.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+        h1, h2, h3, h4, h5, h6, .font-serif {
+            font-family: 'Cormorant Garamond', serif;        }        /* Preloader */        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #1a1a1a; z-index: 9999; display: flex;
+            align-items: center; justify-content: center;
+            transition: opacity 1.2s ease-out, visibility 1.2s ease-out;
+        }
+        #preloader .logo-preloader {
+            font-family: 'Cormorant Garamond', serif; font-size: 3rem; letter-spacing: 0.3rem;
+            color: #c9b08c; overflow: hidden;
+        }
+        #preloader .logo-preloader span {
+            display: inline-block; opacity: 0; transform: translateY(30px);
+            animation: revealLetter 0.8s ease-out forwards;
+        }
+        @keyframes revealLetter { 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+        }        /* Main content transition for modal */
+        #page-wrapper { 
+            transition: transform 0.5s ease, filter 0.5s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        body.modal-open #page-wrapper { transform: scale(0.98); filter: blur(4px); }        /* Hero video styling */
+        .hero-section {
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-video-container { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden; 
+            z-index: 1; 
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.pexels.com/photos/1797393/pexels-photo-1797393.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1') center/cover no-repeat;
+        }        #heroVideoForward, #heroVideoReverse, .hero-video {
+            min-width: 100%; 
+            min-height: 100%; 
+            width: auto; 
+            height: auto; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            object-fit: cover;
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+            display: block;
+            will-change: opacity, transform;
+        }        /* Button hover effect - Premium Gradient Gold */
+        .btn-accent, .btn-secondary { 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-accent:hover, .btn-secondary:hover { 
+            background: linear-gradient(135deg, #f4e6c1 0%, #e0d1b1 25%, #c9b08c 50%, #b8a082 75%, #d4c29a 100%);
+            color: #1a1a1a; 
+            transform: translateY(-4px) scale(1.02); 
+            box-shadow: 0 12px 30px rgba(201, 176, 140, 0.4), 0 0 20px rgba(201, 176, 140, 0.2);
+        }
+        .btn-accent:hover::before, .btn-secondary:hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+            left: 100%;
+        }        .btn-accent { background-color: #c9b08c; color: #1a1a1a; }
+        .btn-secondary { background-color: #c9b08c; color: #1a1a1a; }        /* Hero button - Refined Luxury Design inspired by Watch Case Finishing */
+        .btn-hero {
+            background: 
+                linear-gradient(135deg, 
+                    #0f0f0f 0%, 
+                    #1a1611 20%, 
+                    #26201a 40%, 
+                    #1a1611 60%, 
+                    #0f0f0f 100%
+                );
+            border: 1px solid rgba(201, 176, 140, 0.4);
+            color: #c9b08c;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: 0.95rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            padding: 18px 48px;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 1px 0 rgba(201, 176, 140, 0.15),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+                0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    rgba(201, 176, 140, 0.03) 1px,
+                    transparent 2px,
+                    transparent 8px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    rgba(201, 176, 140, 0.02) 1px,
+                    transparent 2px,
+                    transparent 12px
+                );
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            border-radius: inherit;
+            z-index: 1;
+        }        .btn-hero > * {
+            position: relative;
+            z-index: 3;
+            transition: all 0.6s ease;
+        }
+        .btn-hero::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(201, 176, 140, 0.1) 0%, transparent 40%),
+                radial-gradient(ellipse at 80% 80%, rgba(201, 176, 140, 0.08) 0%, transparent 40%);
+            border-radius: inherit;
+            opacity: 0;
+            transition: all 0.6s ease;
+            z-index: 2;
+        }
+        .btn-hero:hover {
+            background: 
+                linear-gradient(135deg, 
+                    #1a1611 0%, 
+                    #26201a 20%, 
+                    #332b23 40%, 
+                    #26201a 60%, 
+                    #1a1611 100%
+                );
+            border-color: rgba(224, 209, 177, 0.6);
+            color: #e0d1b1;
+            transform: translateY(-3px);
+            letter-spacing: 4px;
+            box-shadow: 
+                inset 0 1px 0 rgba(244, 230, 193, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.7),
+                0 8px 30px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(201, 176, 140, 0.2);
+        }        .btn-hero:hover::before {
+            opacity: 1;
+        }
+        .btn-hero:hover::after {
+            opacity: 1;
+        }
+        .btn-hero:active {
+            transform: translateY(-1px);
+            transition: transform 0.15s ease;
+        }
+
+        /* Modal styling */
+        .modal-backdrop { transition: opacity 0.5s ease; }
+        .modal-content { transition: transform 0.5s 0.1s ease, opacity 0.5s 0.1s ease; transform: translateY(30px); }
+        .modal-active .modal-content { transform: translateY(0); }
+              /* General Reveal Animations */
+        .reveal-parent > * {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .reveal-parent.visible > * { opacity: 1; transform: translateY(0); }
+        .reveal-parent.visible > *:nth-child(1) { transition-delay: 0.1s; }
+        .reveal-parent.visible > *:nth-child(2) { transition-delay: 0.2s; }
+        .reveal-parent.visible > *:nth-child(3) { transition-delay: 0.3s; }
+        .reveal-parent.visible > *:nth-child(4) { transition-delay: 0.4s; }        /* Section Styling */
+        .content-section {
+            background-color: rgba(16, 16, 16, 0.5); /* Subtle overlay for each section */
+            backdrop-filter: blur(2px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }        /* LA MAISON - EDITORIAL NARRATIVE */
+        .maison-chapter {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }        /* Tamaño uniforme para todas las imágenes de La Maison */
+        .maison-chapter img {
+            max-height: 400px;
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+        }
+          /* Tamaño específico más grande para la imagen de La Artesanía */
+        .maison-chapter img[src="images/artesania.jpg"] {
+            max-height: 650px;
+            max-width: 140%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+        }
+          /* Savoir-Faire Reveal Section */
+        #savoir-faire-reveal {
+            height: 300vh;
+            position: relative;
+        }
+        .savoir-faire-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .split-image-container {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+        }        .split-image-part {
+            position: absolute; width: 60vw; height: 30vh;
+            background-size: 60vw 60vh; background-repeat: no-repeat;
+            will-change: transform;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }        .split-top {
+            top: 25%; left: 50%; transform: translateX(-50%);
+            background-position: center 0%;
+        }
+        .split-bottom {
+            top: 55%; left: 50%; transform: translateX(-50%);
+            background-position: center 100%;
+        }
+        .gallery-container {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transform: scale(0.9); will-change: opacity, transform;
+        }
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem; width: 60%;
+        }        .gallery-grid img {
+            width: 100%; height: 100%; object-fit: cover;
+            border-radius: 0.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5);        }
+    </style>    <script>
+        // Script de carga inteligente de videos (optimizado para web)
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoForward = document.getElementById('heroVideoForward');
+            const videoReverse = document.getElementById('heroVideoReverse');
+            
+            if (videoForward) {
+                console.log('Pre-loading video forward...');
+                videoForward.load();
+                videoForward.play().catch(e => console.log('Early video play prevented:', e));
+                
+                // Pre-cargar Hero2 después de que Hero1 esté listo
+                videoForward.addEventListener('canplaythrough', function() {
+                    if (videoReverse) {
+                        console.log('Pre-loading video reverse...');
+                        videoReverse.preload = 'auto';
+                        videoReverse.load();
+                    }
+                }, { once: true });
+            }
+        });
+    </script>
+</head>
+<body>    <!-- === PRELOADER === -->
+    <div id="preloader"><div class="logo-preloader"></div></div>    <div id="page-wrapper">
+        <!-- === HEADER / NAVEGACIÓN === -->
+        <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-black/30 backdrop-blur-sm">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" class="text-2xl font-bold font-serif tracking-wider text-white">AETERNA</a>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#collections" class="text-gray-300 hover:text-white transition-colors duration-300">Colecciones</a> 
+                    <a href="#maison" class="text-gray-300 hover:text-white transition-colors duration-300">La Maison</a>
+                    <a href="#savoir-faire" class="text-gray-300 hover:text-white transition-colors duration-300">Savoir-Faire</a> 
+                    <a href="#contact" class="text-gray-300 hover:text-white transition-colors duration-300">Contacto</a>
+                </nav>
+                <button id="mobile-menu-button" class="md:hidden text-white"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg></button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden bg-black/90 backdrop-blur-lg">
+                <a href="#collections" class="mobile-menu-link block text-center py-4 text-gray-300 hover:bg-gray-800 hover:text-white">Colecciones</a> 
+                <a href="#maison" class="mobile-menu-link block text-center py-4 text-gray-300 hover:bg-gray-800 hover:text-white">La Maison</a>
+                <a href="#savoir-faire" class="mobile-menu-link block text-center py-4 text-gray-300 hover:bg-gray-800 hover:text-white">Savoir-Faire</a> 
+                <a href="#contact" class="mobile-menu-link block text-center py-4 text-gray-300 hover:bg-gray-800 hover:text-white">Contacto</a>
+            </div>
+        </header>        <!-- === MAIN CONTENT === -->
+        <main>
+            <!-- HERO SECTION -->
+            <section class="relative h-screen flex items-center justify-center text-center text-white hero-section">                <!-- === HERO VIDEO BACKGROUND === -->
+                <div class="hero-video-container">                    <!-- Video principal (adelante) - Optimizado para web -->
+                    <video id="heroVideoForward" class="hero-video" autoplay muted playsinline preload="metadata" poster="https://images.pexels.com/photos/1797393/pexels-photo-1797393.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1">
+                        <source src="videos/Hero1.mp4" type="video/mp4">
+                        Su navegador no soporta videos HTML5.
+                    </video>
+                    <!-- Video inverso (reversa) - Optimizado para web -->
+                    <video id="heroVideoReverse" class="hero-video" muted playsinline preload="none" style="opacity: 0;">
+                        <source src="videos/Hero2.mp4" type="video/mp4">
+                        Su navegador no soporta videos HTML5.
+                    </video>
+                </div>
+                <div class="absolute inset-0 bg-black opacity-30 z-0"></div>                <div class="relative z-10 p-6 reveal-parent visible">
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-tight mb-4">La Precisión es Eterna</h1>
+                    <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed">Artesanía de Alta Relojería concebida en Perú para el mundo.</p>
+                    <a href="#collections" class="btn-hero rounded-full px-10 py-4 text-lg">Descubrir Colecciones</a>
+                </div>
+            </section>
+
+            <!-- COLECCIONES -->
+            <section id="collections" class="py-24 md:py-40 content-section">
+                <div class="container mx-auto px-6 lg:px-8">
+                    <div class="text-center mb-20 md:mb-24 reveal-parent">
+                        <h2 class="text-4xl md:text-6xl font-serif mb-6">Nuestras Colecciones</h2>
+                        <p class="text-gray-400 max-w-2xl mx-auto leading-relaxed">Cada pieza es una declaración, un capítulo en nuestra historia.</p>
+                    </div>
+                    <!-- Colección 1: Inti -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center mb-24 md:mb-32 reveal-parent">                         <div class="relative group cursor-pointer" onclick="openProductModal('inti')">
+                            <div class="overflow-hidden rounded-lg"><img src="https://images.pexels.com/photos/2113994/pexels-photo-2113994.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2" alt="Reloj de la colección Inti" class="w-full h-auto object-cover rounded-lg shadow-2xl transition-transform duration-500 ease-in-out group-hover:scale-105"></div>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <h4 class="text-3xl lg:text-4xl font-serif mb-5">Colección Inti</h4>
+                            <p class="text-gray-400 mb-8 max-w-prose mx-auto md:mx-0 leading-relaxed">Homenaje al dios sol Inca, fusionando mitología ancestral con maestría contemporánea. Cada dial es una obra de arte que juega con la luz.</p>
+                            <button onclick="openProductModal('inti')" class="btn-secondary rounded-full px-8 py-3">Explorar Inti</button>
+                        </div>
+                    </div>
+                    <!-- Colección 2: Nazca -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center reveal-parent">
+                        <div class="text-center md:text-right order-2 md:order-1">
+                            <h4 class="text-3xl lg:text-4xl font-serif mb-5">Colección Nazca</h4>
+                            <p class="text-gray-400 mb-8 max-w-prose mx-auto md:ml-auto md:mr-0 leading-relaxed">Inspirada en las enigmáticas Líneas de Nazca, presenta diseños audaces y una precisión que desafía el tiempo. Un tributo a lo inexplicable.</p>
+                             <button onclick="openProductModal('nazca')" class="btn-secondary rounded-full px-8 py-3">Explorar Nazca</button>
+                        </div>                        <div class="relative group cursor-pointer order-1 md:order-2" onclick="openProductModal('nazca')">
+                           <div class="overflow-hidden rounded-lg"><img src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2" alt="Reloj de la colección Nazca" class="w-full h-auto object-cover rounded-lg shadow-2xl transition-transform duration-500 ease-in-out group-hover:scale-105"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- LA MAISON - EDITORIAL -->
+            <section id="maison" class="py-24 md:py-40 content-section">
+                <div class="container mx-auto px-6 lg:px-8">
+                    <div class="text-center mb-20 md:mb-24 reveal-parent">
+                        <h2 class="text-4xl md:text-6xl font-serif mb-6">El Manifiesto de Aeterna</h2>
+                        <p class="text-gray-400 max-w-2xl mx-auto leading-relaxed">Un legado forjado no en años, sino en ideales. Un compromiso inquebrantable con la excelencia.</p>
+                    </div>
+                    <div class="space-y-32">
+                        <!-- Chapter 1 -->
+                        <div class="maison-chapter grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center">
+                            <div class="text-left reveal-parent">
+                                <h3 class="font-serif text-4xl text-[#c9b08c] mb-4">La Visión</h3>
+                                <p class="text-gray-300 leading-relaxed max-w-md">Nuestra casa no se fundó en el tiempo, sino en la convicción de que la verdadera relojería trasciende la mera función. Nace del principio de crear obras maestras con un alma inequívocamente peruana, combinando la precisión suiza con una herencia legendaria.</p>
+                            </div>                            <div class="reveal-parent">
+                                <img src="images/vision.jpg" alt="Bocetos de diseño de relojes" class="rounded-lg shadow-2xl">
+                            </div>
+                        </div>                         <!-- Chapter 2 -->
+                        <div class="maison-chapter grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center">
+                            <div class="reveal-parent pl-8 md:pl-12">
+                                <img src="images/artesania.jpg" alt="Taller de relojería" class="rounded-lg shadow-2xl">
+                            </div>
+                            <div class="reveal-parent pr-8 md:pr-12">
+                                <h3 class="font-serif text-4xl text-[#c9b08c] mb-4 text-right">La Artesanía</h3>
+                                <p class="text-gray-300 leading-relaxed text-right max-w-md ml-auto">En nuestro taller de Lima, el tiempo se mide en dedicación. Es un santuario donde maestros relojeros, guardianes de un saber ancestral, dan vida a nuestras creaciones. Aquí, las técnicas centenarias no se repiten; se reinventan.</p>
+                            </div>
+                        </div>
+                         <!-- Chapter 3 -->
+                        <div class="maison-chapter grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center">
+                            <div class="text-left reveal-parent">
+                                <h3 class="font-serif text-4xl text-[#c9b08c] mb-4">El Legado</h3>
+                                <p class="text-gray-300 leading-relaxed max-w-md">Un reloj Aeterna no solo marca las horas; las define. Es un testamento de un momento, una herencia para el futuro. Continuamos nuestro viaje, no como cronometradores, sino como arquitectos del tiempo.</p>
+                            </div>                            <div class="reveal-parent">
+                                <img src="https://images.pexels.com/photos/277319/pexels-photo-277319.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2" alt="Una persona elegante con un reloj Aeterna" class="rounded-lg shadow-2xl">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- SAVOIR-FAIRE - REVEAL -->
+            <section id="savoir-faire" class="content-section">
+                 <div class="container mx-auto px-6 lg:px-8 pt-24 md:pt-40 mb-24 text-center reveal-parent">
+                    <h2 class="text-4xl md:text-6xl font-serif mb-6">Anatomía de la Perfección</h2>
+                    <p class="text-gray-400 max-w-3xl mx-auto leading-relaxed">No es un reloj. Es una declaración. Desplácese para presenciar la revelación de su alma.</p>
+                 </div>
+                 <div id="savoir-faire-reveal">
+                    <div class="savoir-faire-sticky">
+                        <div class="split-image-container">
+                             <div class="split-image-part split-top"></div>
+                             <div class="split-image-part split-bottom"></div>
+                        </div>                        <div class="gallery-container">                            <div class="gallery-grid">
+                                <img src="https://images.pexels.com/photos/125779/pexels-photo-125779.jpeg?auto=compress&cs=tinysrgb&w=1600&h=2400&dpr=2" alt="Detalle del dial">
+                                <img src="images/imagencentral.jpg" alt="Reloj en un entorno de lujo">
+                                <img src="https://images.pexels.com/photos/9981153/pexels-photo-9981153.jpeg?auto=compress&cs=tinysrgb&w=1600&h=2400&dpr=2" alt="Detalle de la caja y corona">
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </section>
+
+            <!-- CONTACT SECTION -->
+            <section id="contact" class="py-24 md:py-40 content-section">
+                <div class="container mx-auto px-6 lg:px-8">
+                     <div class="text-center max-w-3xl mx-auto reveal-parent">
+                        <h2 class="text-4xl md:text-6xl font-serif mb-6">Una Experiencia Personalizada</h2>
+                        <p class="text-gray-300 max-w-2xl mx-auto leading-relaxed mb-10">El mundo de Aeterna se aprecia mejor en persona. Permítanos guiarle a través de nuestras colecciones en un entorno privado y exclusivo.</p>
+                        <button onclick="openAppointmentModal()" class="btn-accent rounded-full px-12 py-4 text-lg font-bold">Solicitar una Cita Privada</button>
+                    </div>
+                    <div class="mt-20 pt-12 border-t border-white/10 text-center text-gray-400 grid md:grid-cols-2 gap-8 reveal-parent">
+                        <div>
+                            <h4 class="font-bold text-white mb-2">Boutique Insignia</h4>
+                            <p>Av. El Bosque 260, San Isidro, Lima</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-2">Conserje Aeterna</h4>
+                            <p>
+                                <a href="mailto:conserje@aeterna.com.pe" class="hover:text-white">conserje@aeterna.com.pe</a>
+                                <span class="mx-2 text-gray-600">|</span>
+                                <a href="tel:+5112345678" class="hover:text-white">+51 (1) 234 5678</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- FOOTER -->
+        <footer id="footer" class="py-20">
+            <div class="container mx-auto px-6 lg:px-8 text-center text-gray-500 reveal-parent">
+                <a href="#" class="text-4xl font-bold font-serif tracking-wider text-white mb-8 block">AETERNA</a>
+                <div class="flex justify-center flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-8 my-8 text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">Términos y Condiciones</a> 
+                    <a href="#" class="hover:text-white transition-colors">Política de Privacidad</a> 
+                    <a href="#" class="hover:text-white transition-colors">Libro de Reclamaciones</a>
+                </div>
+                <p class="text-sm">&copy; 2025 Aeterna Horlogerie S.A.C.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- === MODALS === -->
+    <div id="product-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 opacity-0 pointer-events-none modal-backdrop">
+        <div id="modal-content" class="modal-content bg-stone-950 w-full max-w-6xl max-h-[90vh] rounded-lg shadow-2xl overflow-y-auto relative opacity-0">
+             <div class="absolute inset-0 bg-cover bg-center -z-10 transition-opacity duration-1000 opacity-0" id="modal-bg"></div>
+             <div class="absolute inset-0 bg-stone-950/80 backdrop-blur-sm -z-10"></div>
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white z-20"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            <div id="product-details-container" class="relative z-10"></div>
+             <div id="video-player-container" class="absolute inset-0 z-30 bg-black flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500">
+                <button onclick="closeVideoPlayer()" class="absolute top-4 right-4 text-white z-40"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                <video id="product-video" class="w-full h-auto max-w-4xl" controls></video>
+            </div>
+        </div>
+    </div>    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DATA ---
+        const products = {
+            'inti': {
+                name: 'Inti Opus I', 
+                collection: 'Colección Inti',
+                emotionalDescription: 'Homenaje al astro rey, el Inti Opus I presenta un dial de aventurina que evoca un cielo estrellado, con un tourbillon volante que representa el sol en su cenit.',
+                images: ['https://images.pexels.com/photos/2113994/pexels-photo-2113994.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2', 'https://images.pexels.com/photos/280250/pexels-photo-280250.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2', 'https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2'],
+                specs: {'Calibre': 'AET-01 Tourbillon Manual', 'Movimiento': 'Mecánico de cuerda manual', 'Funciones': 'Horas, Minutos, Tourbillon', 'Caja': 'Oro rosa de 18k, 42mm', 'Hermeticidad': '30 metros', 'Correa': 'Piel de aligátor negra'},
+                videoUrl: 'videos/Inti.mp4',
+                modalBg: 'https://images.pexels.com/photos/139366/pexels-photo-139366.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2'
+            },
+            'nazca': {
+                name: 'Nazca Geometra', 
+                collection: 'Colección Nazca',
+                emotionalDescription: 'Diseñado con una pureza arquitectónica que recuerda a los geoglifos, su complicación de cronógrafo flyback lo convierte en un instrumento de precisión para el explorador moderno.',
+                images: ['https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2', 'https://images.pexels.com/photos/2783873/pexels-photo-2783873.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2', 'https://images.pexels.com/photos/125779/pexels-photo-125779.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2'],
+                specs: {'Calibre': 'AET-02 Cronógrafo Automático', 'Movimiento': 'Mecánico automático', 'Funciones': 'Cronógrafo Flyback, Fecha', 'Caja': 'Acero 904L, 41mm', 'Hermeticidad': '100 metros', 'Correa': 'Brazalete de acero'},
+                videoUrl: 'videos/Nazca.mp4',
+                modalBg: 'https://images.pexels.com/photos/163822/dubai-city-mordene-architecture-163822.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1067&dpr=2'
+            }        };
+        window.products = products;
+
+        // --- PRELOADER ANIMATION ---
+        const logoContainer = document.querySelector('#preloader .logo-preloader');
+        "AETERNA".split('').forEach((letter, i) => {
+            const span = document.createElement('span');
+            span.textContent = letter;
+            span.style.animationDelay = `${i * 0.15}s`;
+            logoContainer.appendChild(span);
+        });
+
+        const preloader = document.getElementById('preloader');
+
+        // --- SISTEMA DE PING-PONG CON VIDEOS OPTIMIZADOS ---
+        // Todos los videos han sido optimizados con FFmpeg para máxima calidad uniforme:
+        // - CRF 20 (alta calidad visual)
+        // - Preset medium (balance calidad/velocidad)
+        // - Profile High Level 4.0 (máxima compatibilidad)
+        // - Fast start (optimizado para streaming web)
+        // - Audio AAC 128k (calidad profesional)
+        function initHeroVideo() {
+            const videoForward = document.getElementById('heroVideoForward');
+            const videoReverse = document.getElementById('heroVideoReverse');
+            
+            if (!videoForward || !videoReverse) {
+                console.log('Videos no encontrados');
+                return;
+            }
+            
+            console.log('Inicializando sistema de ping-pong con crossfade perfecto...');
+            
+            let currentVideo = 'forward';
+            let isTransitioning = false;
+              // Configurar propiedades de ambos videos con optimizaciones
+            [videoForward, videoReverse].forEach(video => {
+                video.muted = true;
+                video.playsInline = true;
+                video.loop = false; // Importante: no loop automático
+                // Configuración optimizada para web
+                video.setAttribute('webkit-playsinline', 'true');
+                video.setAttribute('x5-playsinline', 'true');
+            });// Función para cambio instantáneo SIN crossfade (para evitar ver el fondo)
+            function instantVideoSwitch(fromVideo, toVideo, targetState) {
+                if (isTransitioning) return;
+                isTransitioning = true;
+                
+                console.log(`Cambio instantáneo de ${fromVideo === videoForward ? 'forward' : 'reverse'} a ${toVideo === videoForward ? 'forward' : 'reverse'}`);
+                
+                // Preparar video de destino inmediatamente
+                toVideo.currentTime = 0;
+                toVideo.style.opacity = '0';
+                toVideo.style.zIndex = '2'; // Por encima del video actual
+                
+                // Iniciar el video de destino y esperar que esté listo
+                const playPromise = toVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        // Esperar que el video esté realmente reproduciéndose
+                        const waitForPlayback = () => {
+                            if (toVideo.currentTime > 0.05) {
+                                // Video está reproduciéndose, hacer cambio instantáneo
+                                performInstantSwitch();
+                            } else {
+                                // Esperar un frame más
+                                requestAnimationFrame(waitForPlayback);
+                            }
+                        };
+                        
+                        const performInstantSwitch = () => {
+                            // Cambio instantáneo sin transición para evitar transparencia
+                            toVideo.style.transition = 'none';
+                            fromVideo.style.transition = 'none';
+                            
+                            // Mostrar nuevo video y ocultar anterior instantáneamente
+                            toVideo.style.opacity = '1';
+                            fromVideo.style.opacity = '0';
+                            
+                            // Cambiar estado inmediatamente
+                            currentVideo = targetState;
+                            
+                            // Limpiar inmediatamente
+                            setTimeout(() => {
+                                fromVideo.pause();
+                                fromVideo.currentTime = 0;
+                                fromVideo.style.zIndex = '1';
+                                toVideo.style.zIndex = '1';
+                                isTransitioning = false;
+                                
+                                console.log(`Cambio completado. Ahora reproduciendo: ${currentVideo}`);
+                            }, 50); // Tiempo mínimo para limpiar
+                        };
+                        
+                        waitForPlayback();
+                        
+                    }).catch(e => {
+                        console.log('Error al reproducir video de destino:', e);
+                        isTransitioning = false;
+                    });
+                }
+            }
+            
+            // Configurar eventos para video forward
+            videoForward.addEventListener('loadeddata', function() {
+                console.log('Video forward cargado, duración:', this.duration);
+            });            videoForward.addEventListener('timeupdate', function() {
+                // Detectar cerca del final (últimos 0.3 segundos)
+                if (currentVideo === 'forward' && !isTransitioning) {
+                    if (this.currentTime >= this.duration - 0.3) {
+                        instantVideoSwitch(videoForward, videoReverse, 'reverse');
+                    }
+                }
+            });
+              videoForward.addEventListener('ended', function() {
+                if (currentVideo === 'forward' && !isTransitioning) {
+                    console.log('Video forward terminó');
+                    instantVideoSwitch(videoForward, videoReverse, 'reverse');
+                }
+            });
+            
+            // Configurar eventos para video reverse
+            videoReverse.addEventListener('loadeddata', function() {
+                console.log('Video reverse cargado, duración:', this.duration);
+            });            videoReverse.addEventListener('timeupdate', function() {
+                // Detectar cerca del final (últimos 0.3 segundos)
+                if (currentVideo === 'reverse' && !isTransitioning) {
+                    if (this.currentTime >= this.duration - 0.3) {
+                        instantVideoSwitch(videoReverse, videoForward, 'forward');
+                    }
+                }
+            });
+              videoReverse.addEventListener('ended', function() {
+                if (currentVideo === 'reverse' && !isTransitioning) {
+                    console.log('Video reverse terminó');
+                    instantVideoSwitch(videoReverse, videoForward, 'forward');
+                }
+            });
+            
+            // Manejo de errores
+            [videoForward, videoReverse].forEach((video, index) => {
+                video.addEventListener('error', function(e) {
+                    console.error(`Error en video ${index === 0 ? 'forward' : 'reverse'}:`, e);
+                    // Mostrar solo el video que funciona
+                    if (index === 0) {
+                        videoReverse.style.display = 'none';
+                    } else {
+                        videoForward.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Inicializar con video forward
+            videoForward.currentTime = 0;
+            videoForward.style.opacity = '1';
+            videoForward.style.visibility = 'visible';
+            videoForward.style.zIndex = '1';
+            
+            videoReverse.currentTime = 0;
+            videoReverse.style.opacity = '0';
+            videoReverse.style.visibility = 'visible';
+            videoReverse.style.zIndex = '1';
+            
+            // Empezar reproducción
+            const playPromise = videoForward.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log('Sistema ping-pong iniciado correctamente');
+                }).catch(e => {
+                    console.log('Autoplay bloqueado:', e);
+                    videoForward.controls = true;
+                });
+            }
+        }
+        // Ejecutar inmediatamente si el DOM ya está listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initHeroVideo);
+        } else {
+            initHeroVideo();
+        }
+        
+        // También ejecutar cuando la ventana esté completamente cargada
+        window.addEventListener('load', () => {
+            console.log('Window loaded, reinitializing video...');
+            initHeroVideo();
+            
+            // Iniciar la transición de salida inmediatamente después de que termine la animación de letras
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+                // Mostrar contenido principal después de que termine la transición del preloader
+                setTimeout(() => {
+                    document.body.classList.add('preloader-done');
+                }, 1300); // 1.2s transición + pequeño margen
+            }, 1200); // Tiempo suficiente para ver la animación completa de letras (7 letras * 0.15s delay + 0.8s duración)
+        });
+
+        // --- HEADER SCROLL EFFECT ---
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => { header.classList.toggle('bg-black/90', window.scrollY > 50); });
+
+        // --- MOBILE MENU ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        document.querySelectorAll('.mobile-menu-link').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));        // --- GENERAL SCROLL ANIMATIONS ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { rootMargin: '0px 0px -10% 0px' });
+        document.querySelectorAll('.reveal-parent').forEach(el => observer.observe(el));// --- GSAP ANIMATIONS ---
+        gsap.registerPlugin(ScrollTrigger);
+          // --- ENHANCED SAVOIR-FAIRE REVEAL ANIMATION ---
+        const savoirFaireSection = document.getElementById('savoir-faire-reveal');
+        const splitTop = document.querySelector('.split-top');
+        const splitBottom = document.querySelector('.split-bottom');
+        const gallery = document.querySelector('.gallery-container');
+        const mainImageUrl = 'images/Savoirfaire.jpg';
+        
+        splitTop.style.backgroundImage = `url(${mainImageUrl})`;
+        splitBottom.style.backgroundImage = `url(${mainImageUrl})`;
+
+        let tlReveal = gsap.timeline({
+            scrollTrigger: {
+                trigger: savoirFaireSection,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.2,
+                ease: "power2.inOut"
+            }
+        });
+
+        // Animación más suave y elegante
+        tlReveal
+          .to(splitTop, { 
+              yPercent: -100, 
+              ease: "power3.inOut",
+              filter: "blur(2px)"
+          }, 0)
+          .to(splitBottom, { 
+              yPercent: 100, 
+              ease: "power3.inOut",
+              filter: "blur(2px)"
+          }, 0)
+          .to(gallery, { 
+              opacity: 1, 
+              scale: 1, 
+              ease: "back.out(1.2)",
+              filter: "blur(0px)"
+          }, 0.15);
+
+    });
+
+    // --- GLOBAL MODAL FUNCTIONS ---
+    function openAppointmentModal() {
+        alert("La funcionalidad de citas privadas se encuentra en desarrollo.");
+    }
+
+    window.openProductModal = (productId) => {
+        const product = window.products[productId];
+        if (!product) return;
+
+        const container = document.getElementById('product-details-container');
+        const galleryHTML = product.images.map(src => `<div class="overflow-hidden rounded-md cursor-pointer"><img src="${src}" class="w-full h-auto object-cover transition-transform duration-300 hover:scale-110" onclick="setMainImage('${src}')"></div>`).join('');
+        const specsHTML = Object.entries(product.specs).map(([key, value]) => `<div class="flex justify-between py-3 border-b border-stone-800 text-sm"><dt class="text-gray-400">${key}</dt><dd class="text-white text-right">${value}</dd></div>`).join('');
+        const modalBg = document.getElementById('modal-bg');
+        
+        modalBg.style.backgroundImage = `url(${product.modalBg})`;
+        setTimeout(() => { modalBg.style.opacity = 0.1; }, 100);
+
+        container.innerHTML = `
+            <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[90vh]">
+                <div class="p-4 md:p-8 flex flex-col items-center justify-center">${product.videoUrl ? `<button onclick="playVideo('${product.videoUrl}')" class="absolute top-4 left-4 btn-secondary rounded-full px-4 py-2 text-sm z-20">Ver Video</button>` : ''}<img id="main-product-image" src="${product.images[0]}" class="w-full h-auto object-contain rounded-lg max-h-[50vh] transition-opacity duration-300"><div class="grid grid-cols-3 gap-4 mt-8 w-full max-w-md">${galleryHTML}</div></div>
+                <div class="p-8 flex flex-col bg-black/30"><div class="flex-grow"><h2 class="font-serif text-4xl md:text-5xl text-white mb-2">${product.name}</h2><p class="text-lg text-[#c9b08c] mb-8">${product.collection}</p><p class="text-gray-300 mb-10 leading-relaxed">${product.emotionalDescription}</p><h4 class="font-serif text-2xl text-white mb-4">Especificaciones</h4><dl>${specsHTML}</dl></div><div class="space-y-4 pt-8 border-t border-stone-700"><button onclick="openAppointmentModal()" class="w-full btn-accent rounded-lg py-4 text-lg font-bold">Solicitar Cita Privada</button><button class="w-full btn-secondary rounded-lg py-4 text-lg font-bold">Añadir a Lista de Deseos</button></div></div>
+            </div>`;
+        
+        const modal = document.getElementById('product-modal');
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('modal-active');
+        document.body.classList.add('modal-open');
+        modal.querySelector('.modal-content').classList.remove('opacity-0');
+    }
+
+    window.closeProductModal = () => {
+        const modal = document.getElementById('product-modal');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.classList.remove('modal-active');
+        document.body.classList.remove('modal-open');
+        document.getElementById('modal-bg').style.opacity = 0;
+        modal.querySelector('.modal-content').classList.add('opacity-0');
+        closeVideoPlayer();
+    };
+
+    window.playVideo = (url) => {
+        const videoPlayer = document.getElementById('video-player-container');
+        document.getElementById('product-video').src = url;
+        videoPlayer.classList.remove('opacity-0', 'pointer-events-none');
+    };
+    window.closeVideoPlayer = () => {
+        const videoPlayer = document.getElementById('video-player-container');
+        document.getElementById('product-video').pause();
+        document.getElementById('product-video').src = '';
+        videoPlayer.classList.add('opacity-0', 'pointer-events-none');
+    };
+
+    window.setMainImage = (src) => {
+        const mainImg = document.getElementById('main-product-image');
+        mainImg.style.opacity = 0;
+        setTimeout(() => { mainImg.src = src; mainImg.style.opacity = 1; }, 300);
+    };    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeProductModal();
+    });
+    </script>
+</body>
+</html>
